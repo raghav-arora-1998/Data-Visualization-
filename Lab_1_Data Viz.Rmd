@@ -1,0 +1,172 @@
+---
+title: "Lab_1_Arora"
+author: "Raghav Arora"
+date: "2022-09-26"
+output:
+  rmdformats::downcute:
+    self_contained: true
+    default_style: "light"
+    downcute_theme: "default"
+---
+
+
+```{r setup, include=FALSE}
+## Global options
+knitr::opts_chunk$set(cache = TRUE)
+```
+
+```{r libraries}
+library(tidyverse)
+library(here)
+library(ggplot2)
+library(hexbin)
+library(rmdformats)
+```
+
+# **Task 1**
+
+1.  Identify, and list here, what aesthetics are being used and which variables are being mapped to each aesthetic.
+
+Ans. Aesthetics: x=income, y=life_exp, fill=four_regions, size=population
+
+2.  Import the q1data.csv dataset.
+
+```{r read data 1}
+data_1 <- read_csv(here("Data", "q1data.csv"))
+data_1 <- na.omit(data_1)
+```
+
+3.  Recreate the plot as best you can using ggplot.
+
+```{r}
+data_1 %>%
+  ggplot() + 
+    geom_point(aes(x=income, y=life_exp, size=population, fill=four_regions),colour="black",pch=21) + scale_size(range = c(0, 25)) + scale_x_continuous(trans = "log2", breaks = c(500, 1000, 2000, 4000, 8000, 16000, 32000, 64000), label = c("500", "1000", "2000", "4000", "8000", "16k", "32k", "64k")) + theme_light() + scale_y_continuous(breaks = seq(20, 90, by = 10), limit = c(20, 90)) + labs(x="Income", y="Life expectancy (years)", fill="World Regions", size="Population") + scale_fill_manual(values = c("africa" = '#54D5E9',
+                                "americas"='#7EEB03',
+                                "asia"="#F15772",
+                                "europe"="#FBE700")) +
+    annotate("text", x = 80000, y = 20, size = 100/.pt, label = "2010", hjust=1.1, vjust=-1.1, col="grey", cex=6,fontface = "bold", alpha = 0.5)
+```
+
+4.  What other geometries could you use here besides geom_point? Provide an actual plot of another geometry being used here and why it's good or bad for visualizing these data.
+
+```{r}
+data_1 %>%
+  ggplot() + 
+    geom_hex(aes(x=income, y=life_exp, size=population, fill=four_regions),colour="black",pch=21) + scale_size(range = c(0, 25)) + scale_x_continuous(trans = "log2", breaks = c(500, 1000, 2000, 4000, 8000, 16000, 32000, 64000), label = c("500", "1000", "2000", "4000", "8000", "16k", "32k", "64k")) + theme_light() + scale_y_continuous(breaks = seq(20, 90, by = 10), limit = c(20, 90)) + labs(x="Income", y="Life expectancy (years)", fill="World Regions", size="Population") + scale_fill_manual(values = c("africa" = '#54D5E9',
+                                "americas"='#7EEB03',
+                                "asia"="#F15772",
+                                "europe"="#FBE700")) +
+    annotate("text", x = 80000, y = 20, size = 100/.pt, label = "2010", hjust=1.1, vjust=-1.1, col="grey", cex=6,fontface = "bold", alpha = 0.5)
+```
+
+Ans. There are many other geometries that can be used to visualize this data besides geom_point. Here I used geom_hex which is in fact a worse graph than geom_point mainly because it does not consider the size parameter, which was population in this case. I would recommend either faucet wrapping one of the variables to include the size parameter in or sticking with geom_point.
+
+# **Task 2**
+
+1.  Identify, and list here, what aesthetics are being used and which variables are being mapped to each aesthetic.
+
+Ans. Aesthetics: x=exports, y=imports, fill=four_regions, size=energy
+
+2.  Import the q2data.csv dataset.
+
+```{r read data 2}
+data_2 <- read_csv(here("Data", "q2data.csv"))
+```
+
+3.  Recreate the plot as best you can using ggplot.
+
+```{r}
+data_2 %>%
+  ggplot() + 
+    geom_point(aes(x=exports, y=imports, size=as.numeric(energy), fill=four_regions),pch=21) + 
+    scale_size(range = c(0, 12)) + scale_y_continuous(limits=c(20, 400))+ scale_x_continuous(breaks = c(20, 40, 60, 80, 100, 120, 140, 160, 180, 200, 220)) + theme_light() + labs(x="Exports (\\% of GDP)", y="Imports (\\% of GDP)", fill="World Regions", size="Population") +
+    scale_fill_manual(values = c("africa" = '#54D5E9',
+                                "americas"='#7EEB03',
+                                "asia"="#F15772",
+                                "europe"="#FBE700")) +
+    annotate("text", x = 140, y = -Inf, size = 100/.pt, label = "1997", hjust=1.1, vjust=-1.1, col="grey", cex=6,fontface = "bold", alpha = 0.5)
+```
+
+4.  What other geometries could you use here besides geom_point? Provide an actual plot of another geometry being used here and why it's good or bad for visualizing these data.
+
+```{r}
+data_2 %>%
+  ggplot() + 
+    geom_boxplot(aes(x=exports, y=imports, size=as.numeric(energy), fill=four_regions),pch=21) + 
+    scale_size(range = c(0, 12)) + scale_y_continuous(limits=c(20, 400))+ scale_x_continuous(breaks = c(20, 40, 60, 80, 100, 120, 140, 160, 180, 200, 220)) + theme_light() + labs(x="Exports (\\% of GDP)", y="Imports (\\% of GDP)", fill="World Regions", size="Population") +
+    scale_fill_manual(values = c("africa" = '#54D5E9',
+                                "americas"='#7EEB03',
+                                "asia"="#F15772",
+                                "europe"="#FBE700")) +
+    annotate("text", x = 140, y = -Inf, size = 100/.pt, label = "1997", hjust=1.1, vjust=-1.1, col="grey", cex=6,fontface = "bold", alpha = 0.5)
+```
+
+Ans. There are many other geometries that can be used to visualize this data besides geom_point. Here I used geom_boxplot which is in fact a worse graph than geom_point mainly because it does not consider the size parameter, which was population in this case. Moreover, it shows additional information, that is not really relevant such as the median and the percentiles. Moreover, using geom_boxplot adds an additional region to the chart, which is probably a data cleaning problem since there are other continents in the world too. However, geom_boxplot also includes information such as the IQR and outlier data, which can be considered useful when visualizing this type of data. Overall, I would recommend either faucet wrapping one of the variables to include the size parameter in but rather sticking with geom_point.
+
+# **Task 3**
+
+1.  Identify, and list here, what aesthetics are being used and which variables are being mapped to each aesthetic.
+
+Ans. Aesthetics: x=internet_users, y=gdp, fill=four_regions, size=income
+
+2.  Import the q3data.csv dataset.
+
+```{r read data}
+data_3 <- read_csv(here("Data", "q3data.csv"))
+data_3 <- na.omit(data_3)
+```
+
+3.  Recreate the plot as best you can using ggplot.
+
+```{r}
+data_3 %>%
+  ggplot() + 
+    geom_point(aes(x=internet_users, y=gdp, size=income, fill=four_regions),pch=21) + 
+    scale_size(range = c(0, 15)) + scale_x_continuous(breaks = seq(10, 100, by = 10)) +
+    scale_y_log10(breaks = c(200, 500, 1000, 2000, 5000, 10000, 20000, 50000, 100000), label = c("200", "500", "1000", "2000", "5000", "10k", "20k", "50k", "100k"))+ theme_light()+ labs(x="Individuals using the Internet", y="GDP/capita", fill="World Regions", size="Income") +
+    scale_fill_manual(values = c("africa" = '#54D5E9',
+                                "americas"='#7EEB03',
+                                "asia"="#F15772",
+                                "europe"="#FBE700")) +
+    annotate("text", x = 75, y = 180, size = 100/.pt, label = "2001", hjust=1.1, vjust=-1.1, col="grey", cex=6,fontface = "bold", alpha = 0.5)
+```
+
+4.  What other geometries could you use here besides geom_point? Provide an actual plot of another geometry being used here and why it's good or bad for visualizing these data.
+
+```{r}
+data_3 %>%
+  ggplot() + 
+    geom_jitter(aes(x=internet_users, y=gdp, size=income, fill=four_regions),pch=21) + 
+    scale_size(range = c(0, 15)) + scale_x_continuous(breaks = seq(10, 100, by = 10)) +
+    scale_y_log10(breaks = c(200, 500, 1000, 2000, 5000, 10000, 20000, 50000, 100000), label = c("200", "500", "1000", "2000", "5000", "10k", "20k", "50k", "100k"))+ theme_light()+ labs(x="Individuals using the Internet", y="GDP/capita", fill="World Regions", size="Income") +
+    scale_fill_manual(values = c("africa" = '#54D5E9',
+                                "americas"='#7EEB03',
+                                "asia"="#F15772",
+                                "europe"="#FBE700")) +
+    annotate("text", x = 75, y = 180, size = 100/.pt, label = "2001", hjust=1.1, vjust=-1.1, col="grey", cex=6,fontface = "bold", alpha = 0.5)
+```
+
+Ans. There are many other geometries that can be used to visualize this data besides geom_point. Here I used geom_jitter which is in fact the same graph as geom_point, thus making it easy to visualize each variable. I would recommend using either of these geometries to visualize this type of data, since they are essentially identical.
+
+# **Challenge Point**
+
+For one of the Tasks above, create a visualization using the same variables but map them to different aesthetics than you used above (originally). Then answer the following questions:
+
+```{r}
+data_1 %>%
+  ggplot() + 
+    geom_point(aes(x=population, y=life_exp, size=income, fill=four_regions),colour="black",pch=21) + scale_size(range = c(0, 25)) + scale_x_continuous(trans = "log2", breaks = c(10000, 100000, 1000000, 10000000, 100000000, 1000000000), label = c("10K", "100K", "1M", "10M", "100M", "1B")) + theme_light() + scale_y_continuous(breaks = seq(20, 90, by = 10), limit = c(20, 90)) + labs(x="Population", y="Life expectancy (years)", fill="World Regions", size="Income") + scale_fill_manual(values = c("africa" = '#54D5E9',
+                                "americas"='#7EEB03',
+                                "asia"="#F15772",
+                                "europe"="#FBE700")) +
+    annotate("text", x = 800000000, y = 20, size = 100/.pt, label = "2010", hjust=1.1, vjust=-1.1, col="grey", cex=6,fontface = "bold", alpha = 0.5)
+```
+
+1.  Is this new graph better or worse than the original? Why?
+
+Ans. I believe the new graph is worse as it does not visualize the information as easily as the previous graph did because when the x variable is set to population and size parameter is set to income, no trend is really observed unlike the previous graph where we could see as income increases life expectancy increases.
+
+2.  For each aesthetic used, write down your best, general advice on what kinds of variables or data would be best displayed using that aesthetic. Try to be as thoughtful and rich as possible. For example, color may seem like it is well suited for a categorical variable, but color gradients can be used well for continuous variables. If it helps, try to think not only of the computing aspects but the business/communication/marketing aspects as well.
+
+Ans. The aesthetics I used were x variable, y variable, size and fill. I believe the best way to map these variables is to map them like the original geom_point graph. This is because when mapping x to income and y to life expectancy, we can recognize an increasing trend, something which we were unable to accomplish when mapping x and y to the other variables. Moreover,the fill parameter was best for regions in this case since it is a categorical variable with only 4 observations. Any other variable used for fill would not work for this data type as there were too many observations for them. Finally, population was perfect as the size parameter as it helps the audience visualize the size of the country relative to each other and is a variable that is not hugely important with regards to trends. Therefore, it is important to realize that your x and y aesthetics should be mapped to variables that produce the best trends, with your fill aesthetic being best for variables with the least amount of observations and your size aesthetic being best for variables that visualize the difference between observations within that variable.
